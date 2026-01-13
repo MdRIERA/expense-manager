@@ -1,0 +1,83 @@
+/* ... Previous styles ... */
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: var(--danger);
+}
+
+.category-chart-wrapper {
+    height: 250px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+/* Edit Button in Transaction List */
+.edit-btn {
+    background: none;
+    border: none;
+    color: var(--accent-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-right: 0.5rem;
+}
+
+.transaction-item:hover .edit-btn {
+    opacity: 1;
+}
+
+/* Category Label as Button */
+.t-category {
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.t-category:hover {
+    opacity: 1;
+    text-shadow: 0 0 8px currentColor;
+}

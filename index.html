@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastos Cotidianos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="background-glow"></div>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-bolt"></i>
+                <h1>GASTOS <span>COTIDIANOS</span></h1>
+            </div>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <span class="label">Total Gastado</span>
+                    <span class="value" id="total-amount">€0.00</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="dashboard-grid">
+                <!-- Add Expense Form -->
+                <div class="card glass-panel form-card">
+                    <h2><i class="fa-solid fa-plus-circle"></i> Nuevo Gasto</h2>
+                    <form id="expense-form">
+                        <div class="form-group">
+                            <label for="description">Concepto</label>
+                            <input type="text" id="description" placeholder="Ej: Cena, Teclado..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Cantidad (€)</label>
+                            <input type="number" id="amount" placeholder="0.00" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Sector</label>
+                            <select id="category" required>
+                                <option value="comida">Comida</option>
+                                <option value="tecnologia">Tecnología</option>
+                                <option value="ropa">Ropa</option>
+                                <option value="transporte">Transporte</option>
+                                <option value="hogar">Hogar</option>
+                                <option value="ocio">Ocio</option>
+                                <option value="otros">Otros</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Notas (Opcional)</label>
+                            <textarea id="notes" rows="2"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Fecha</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        <button type="submit" class="cta-button">
+                            <span>Añadir Transacción</span>
+                            <div class="liquid"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="card glass-panel charts-card">
+                    <h2><i class="fa-solid fa-chart-pie"></i> Análisis de Gastos</h2>
+                    <div class="charts-container">
+                        <div class="chart-wrapper">
+                            <canvas id="expensesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transactions List -->
+            <section class="transactions-section glass-panel">
+                <h2><i class="fa-solid fa-list-ul"></i> Historial Reciente</h2>
+                <div class="transactions-list" id="transaction-list">
+                    <!-- Transactions will be injected here -->
+                    <div class="empty-state">
+                        <i class="fa-solid fa-ghost"></i>
+                        <p>No hay gastos registrados aún</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Edit Expense Modal -->
+        <div id="edit-modal" class="modal hidden">
+            <div class="modal-content glass-panel">
+                <span class="close-modal">&times;</span>
+                <h2><i class="fa-solid fa-pen-to-square"></i> Editar Gasto</h2>
+                <form id="edit-expense-form">
+                    <input type="hidden" id="edit-id">
+                    <div class="form-group">
+                        <label for="edit-description">Concepto</label>
+                        <input type="text" id="edit-description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-amount">Cantidad (€)</label>
+                        <input type="number" id="edit-amount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-category">Sector</label>
+                        <select id="edit-category" required>
+                            <!-- Options injected by JS or static -->
+                            <option value="comida">Comida</option>
+                            <option value="tecnologia">Tecnología</option>
+                            <option value="ropa">Ropa</option>
+                            <option value="transporte">Transporte</option>
+                            <option value="hogar">Hogar</option>
+                            <option value="ocio">Ocio</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-notes">Notas</label>
+                        <textarea id="edit-notes" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-date">Fecha</label>
+                        <input type="date" id="edit-date" required>
+                    </div>
+                    <button type="submit" class="cta-button">Guardar Cambios</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transaction Detail Modal -->
+        <div id="detail-modal" class="modal hidden">
+            <div class="modal-content glass-panel">
+                <span class="close-modal" id="close-detail-modal">&times;</span>
+                <h2><i class="fa-solid fa-circle-info"></i> Detalle del Gasto</h2>
+                <div class="detail-content">
+                    <div class="detail-item">
+                        <span class="d-label">Concepto:</span>
+                        <span class="d-value" id="detail-description"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="d-label">Cantidad:</span>
+                        <span class="d-value" id="detail-amount"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="d-label">Categoría:</span>
+                        <span class="d-value" id="detail-category"></span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="d-label">Fecha:</span>
+                        <span class="d-value" id="detail-date"></span>
+                    </div>
+                    <div class="detail-item full-width">
+                        <span class="d-label">Notas:</span>
+                        <p class="d-value notes-box" id="detail-notes"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
